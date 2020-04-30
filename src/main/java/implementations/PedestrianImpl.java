@@ -42,17 +42,15 @@ public class PedestrianImpl implements Pedestrian {
         double a = (radius-rmin)/(rmax-rmin);
         vd = vmax*Math.pow(a,1);
 
-        Vector en = (target.substract(position).divide(target.substract(position).length()));
 
-
-        velocity = en;
+        velocity = target.substract(position).divide(target.substract(position).length());
     }
 
     public void updatePosition(double dt,double vmax, Vector target) {
         Vector vel;
         double v;
         if(collided){
-            double mod = escapeVel.distance(new Vector(0,0));
+            double mod = escapeVel.length();
             vel = escapeVel.divide(mod);
             v = vmax;
         }
@@ -64,15 +62,29 @@ public class PedestrianImpl implements Pedestrian {
         position = position.getAdded(vel.multiply(dt*v));
 
 
-        if(!targetReached && (position.distance(target)-radius) <=0) {
+        if(!targetReached && crossDoor(target)) {
             targetReached = true;
+        }
+        if(!targetReached && position.y<0){
+            position.y = radius;
         }
         collided = false;
 
     }
 
+    private boolean crossDoor(Vector target) {
+        if(Math.abs(target.x-position.x)<Math.abs(radius-0.6)){
+            if(Math.abs(target.y-position.y)<radius){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void wallCollision(double rmin) {
-        if(position.y-radius<=0){
+
+        if((position.y-radius)<=0 && !targetReached){
 
             Vector wall = new Vector(position.x,0);
             collided = true;

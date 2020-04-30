@@ -22,25 +22,32 @@ public class PedestrianDynamics {
 
         double dt = 0.05;
 
-        Pedestrian p1 = new PedestrianImpl(new Vector(10,10),0.32);
-        System.out.println(p1.getRadius());
 
         List<Pedestrian> pedestrians = new ArrayList<Pedestrian>();
-        pedestrians.add(p1);
+        Vector base = new Vector(5,5);
+
+        for (int i = 0; i<10;i++){
+            for(int j = 0; j<10;j++){
+                Pedestrian p1 = new PedestrianImpl(base.getAdded(new Vector(i,j)),0.10);
+                pedestrians.add(p1);
+
+            }
+        }
 
 
-        double rmax = 0.32;
-        double rmin = 0.15;
-        double vmax = 1.55;
+
+        double rmax = 0.37;
+        double rmin = 0.10;
+        double vmax = 0.95;
         double tao = 0.5;
         double beta = 0.9;
 
-        Vector door = new Vector(50,0);
-        Vector secondary = new Vector(50,-100);
+        Vector door = new Vector(10,0);
+        Vector secondary = new Vector(10,-100);
         generateOvitoFile(pedestrians);
 
         double time=0;
-        while(time<= 50){
+        while(time<= 300){
             for(Pedestrian p : pedestrians){
                 p.wallCollision(rmin);
                 for (Pedestrian other : pedestrians){
@@ -184,7 +191,7 @@ public class PedestrianDynamics {
             sb.append("\n");
         }
 
-        sb.append(50);
+        sb.append(10);
         sb.append("\t");
         sb.append(0);
         sb.append("\t");
