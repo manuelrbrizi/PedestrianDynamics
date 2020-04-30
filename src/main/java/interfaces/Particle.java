@@ -21,5 +21,12 @@ public interface Particle {
     int getId();
     Set<Particle> getNeighbours();
     void setNeighbours(Set<Particle> neighbours);
+    double getRadius();
+    boolean collides(Particle p);
+
+    boolean collided();
+    void setCollision(boolean collided);
+
+    void updateEscape(Particle other);
 
 }

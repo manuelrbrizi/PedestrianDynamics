@@ -15,6 +15,7 @@ public class ParticleImpl implements Particle {
     private double velocity;
     private double angle;
     private double newAngle;
+    private boolean collided;
 
 
     public ParticleImpl(double x, double y, int id, double velocity, double angle) {
@@ -24,6 +25,18 @@ public class ParticleImpl implements Particle {
         this.neighbours = new HashSet<Particle>();
         this.velocity = velocity;
         this.angle = angle;
+
+    }
+
+    public boolean collided(){
+        return collided;
+    }
+
+    public void setCollision(boolean collided){
+        this.collided = true;
+    }
+
+    public void updateEscape(Particle other){
 
     }
 
@@ -37,6 +50,10 @@ public class ParticleImpl implements Particle {
 
     public int getId() {
         return id;
+    }
+
+    public double getRadius(){
+        return radius;
     }
 
     public double getVelocity() {
@@ -117,5 +134,12 @@ public class ParticleImpl implements Particle {
         else if(y < 0){
             y += L;
         }
+    }
+
+    public boolean collides(Particle p){
+        double distance = Math.sqrt(Math.pow(x-p.getX(),2) + Math.pow(y-p.getY(),2));
+
+        return distance - radius - p.getRadius() <=0;
+
     }
 }

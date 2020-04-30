@@ -1,13 +1,7 @@
-import implementations.CellImpl;
-import implementations.GridImpl;
-import interfaces.Cell;
-import interfaces.Grid;
-import interfaces.Parser;
-import interfaces.Particle;
+import implementations.*;
+import interfaces.*;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -15,7 +9,70 @@ import java.util.Random;
 public class PedestrianDynamics {
 
     public static void main(String args[]){
-        System.out.println("HOLA MUNDO!\n");
+
+        PrintWriter writer = null;
+
+        try {
+            writer = new PrintWriter("outputOVITO.txt");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        writer.print("");
+        writer.close();
+
+        double dt = 0.05;
+
+        Pedestrian p1 = new PedestrianImpl(new Vector(10,10),0.32);
+        System.out.println(p1.getRadius());
+
+        List<Pedestrian> pedestrians = new ArrayList<Pedestrian>();
+        pedestrians.add(p1);
+
+
+        double rmax = 0.32;
+        double rmin = 0.15;
+        double vmax = 1.55;
+        double tao = 0.5;
+        double beta = 0.9;
+
+        Vector door = new Vector(50,0);
+        Vector secondary = new Vector(50,-100);
+        generateOvitoFile(pedestrians);
+
+        double time=0;
+        while(time<= 50){
+            for(Pedestrian p : pedestrians){
+                p.wallCollision(rmin);
+                for (Pedestrian other : pedestrians){
+                    if(!p.equals(other) && p.collides(other)){
+                        p.updateEscape(other, rmin);
+                        other.updateEscape(p, rmin);
+                    }
+                }
+            }
+
+            for(Pedestrian p : pedestrians){
+                p.updateRadius(rmax, tao, dt);
+            }
+
+            for (Pedestrian p : pedestrians){
+                if(p.targetReached()){
+                    p.updateVelocity(rmin, rmax, beta, vmax, secondary);
+                }
+                else {
+                    p.updateVelocity(rmin, rmax, beta, vmax, door);
+
+                }
+            }
+
+            for (Pedestrian p : pedestrians){
+                p.updatePosition(dt, vmax, door);
+            }
+
+            generateOvitoFile(pedestrians);
+            time+=dt;
+        }
+
     }
 
     private static Grid fillGrid(Parser parser){
@@ -112,23 +169,27 @@ public class PedestrianDynamics {
         }
     }
 
-    private static void generateOvitoFile(Grid grid){
+    private static void generateOvitoFile(List<Pedestrian> pedestrians){
         StringBuilder sb = new StringBuilder();
-        sb.append(grid.getParticles().size());
+        sb.append(pedestrians.size()+1);
         sb.append("\n");
         sb.append("\n");
 
-        for (Particle p: grid.getParticles()){
-            sb.append(p.getX());
+        for (Pedestrian p: pedestrians){
+            sb.append(p.getPosition().x);
             sb.append("\t");
-            sb.append(p.getY());
+            sb.append(p.getPosition().y);
             sb.append("\t");
-            sb.append(p.getXVelocity());
-            sb.append("\t");
-            sb.append(p.getYVelocity());
-            sb.append("\t");
-            sb.append(0.03);
+            sb.append(p.getRadius());
+            sb.append("\n");
         }
+
+        sb.append(50);
+        sb.append("\t");
+        sb.append(0);
+        sb.append("\t");
+        sb.append(0.25);
+        sb.append("\n");
 
         try {
             // Open given file in append mode.
