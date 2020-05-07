@@ -21,4 +21,5 @@ public interface Pedestrian {
     Vector getPosition();
     double getRadius();
     boolean targetReached();
+    Vector getVelocity();
 }

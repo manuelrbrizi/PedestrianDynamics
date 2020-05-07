@@ -27,7 +27,7 @@ public class PedestrianImpl implements Pedestrian {
     public void updateEscape(Pedestrian other, double rmin) {
         collided = true;
         radius = rmin;
-        Vector en = (position.substract(other.getPosition()).divide(position.substract(other.getPosition()).length()));
+        Vector en = (position.substract(other.getPosition()).divide(position.distance(other.getPosition())));
         escapeVel = escapeVel.getAdded(en);
     }
 
@@ -69,6 +69,8 @@ public class PedestrianImpl implements Pedestrian {
             position.y = radius;
         }
         collided = false;
+        escapeVel = new Vector(0,0);
+        velocity = new Vector(0,0);
 
     }
 
@@ -104,5 +106,9 @@ public class PedestrianImpl implements Pedestrian {
 
     public boolean targetReached() {
         return targetReached;
+    }
+
+    public Vector getVelocity() {
+        return escapeVel;
     }
 }

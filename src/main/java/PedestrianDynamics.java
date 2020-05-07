@@ -47,6 +47,7 @@ public class PedestrianDynamics {
         generateOvitoFile(pedestrians);
 
         double time=0;
+        int i = 0;
         while(time<= 300){
             for(Pedestrian p : pedestrians){
                 p.wallCollision(rmin);
@@ -56,10 +57,6 @@ public class PedestrianDynamics {
                         other.updateEscape(p, rmin);
                     }
                 }
-            }
-
-            for(Pedestrian p : pedestrians){
-                p.updateRadius(rmax, tao, dt);
             }
 
             for (Pedestrian p : pedestrians){
@@ -72,12 +69,20 @@ public class PedestrianDynamics {
                 }
             }
 
+            for(Pedestrian p : pedestrians){
+                p.updateRadius(rmax, tao, dt);
+            }
+
+
+
             for (Pedestrian p : pedestrians){
                 p.updatePosition(dt, vmax, door);
             }
 
-            generateOvitoFile(pedestrians);
+
             time+=dt;
+            i++;
+            generateOvitoFile(pedestrians);
         }
 
     }
@@ -178,7 +183,7 @@ public class PedestrianDynamics {
 
     private static void generateOvitoFile(List<Pedestrian> pedestrians){
         StringBuilder sb = new StringBuilder();
-        sb.append(pedestrians.size()+1);
+        sb.append(pedestrians.size()+2);
         sb.append("\n");
         sb.append("\n");
 
@@ -191,11 +196,18 @@ public class PedestrianDynamics {
             sb.append("\n");
         }
 
-        sb.append(10);
+        sb.append(9.3);
         sb.append("\t");
         sb.append(0);
         sb.append("\t");
-        sb.append(0.25);
+        sb.append(0.1);
+        sb.append("\n");
+
+        sb.append(10.7);
+        sb.append("\t");
+        sb.append(0);
+        sb.append("\t");
+        sb.append(0.1);
         sb.append("\n");
 
         try {
