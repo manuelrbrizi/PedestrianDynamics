@@ -65,14 +65,12 @@ public class PedestrianDynamics {
                 }
                 else {
                     p.updateVelocity(rmin, rmax, beta, vmax, door);
-
                 }
             }
 
             for(Pedestrian p : pedestrians){
                 p.updateRadius(rmax, tao, dt);
             }
-
 
 
             for (Pedestrian p : pedestrians){
@@ -192,6 +190,7 @@ public class PedestrianDynamics {
             sb.append("\t");
             sb.append(p.getPosition().y);
             sb.append("\t");
+//            sb.append(0.1);
             sb.append(p.getRadius());
             sb.append("\n");
         }
