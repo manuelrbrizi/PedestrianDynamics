@@ -10,14 +10,20 @@ public class PedestrianImpl implements Pedestrian {
     private double radius;
     private boolean collided;
     private boolean targetReached;
+    public int id;
 
 
-    public  PedestrianImpl(Vector position, double radius){
+    public int getId() {
+        return id;
+    }
+
+    public  PedestrianImpl(Vector position, double radius, int id){
         this.position = position;
         this.radius = radius;
         this.escapeVel = new Vector(0,0);
         this.collided = false;
         this.targetReached = false;
+        this.id = id;
     }
 
     public boolean collides(Pedestrian other) {
@@ -110,5 +116,32 @@ public class PedestrianImpl implements Pedestrian {
 
     public Vector getVelocity() {
         return escapeVel;
+    }
+
+    public void calculateForce(Vector otherPosition, Vector target){
+        double A = 2000.0, Bp = 0.08, Bw = 0.04;
+
+        Vector toTarget = target.substract(position).divide(target.substract(position)
+                .length());
+        Vector toParticle = otherPosition.substract(position).divide(otherPosition
+                .substract(position).length());
+
+        double angle = toParticle.angle() - toTarget.angle();
+        double mod;
+
+        if((position.y-radius)<=0 && !targetReached){
+            mod = A*Math.exp(-position.distance(otherPosition)/Bw)*Math.cos(angle);
+        }
+        else{
+            mod = A*Math.exp(-position.distance(otherPosition)/Bp)*Math.cos(angle);
+        }
+
+        Vector newVel = (position.substract(otherPosition).divide(position.
+                distance(otherPosition))).multiply(mod).perp();
+
+        System.out.printf("NEW_VEL_X_BEF = %f, NEW_VEL_Y_BEF = %f\n", newVel.x, newVel.y);
+        System.out.printf("VEL_X_BEF = %f, VEL_Y_BEF = %f\n", velocity.x, velocity.y);
+        velocity = velocity.getAdded(newVel);
+        System.out.printf("VEL_X_AFT = %f, VEL_Y_AFT = %f\n", velocity.x, velocity.y);
     }
 }

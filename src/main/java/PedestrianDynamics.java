@@ -25,16 +25,17 @@ public class PedestrianDynamics {
 
         List<Pedestrian> pedestrians = new ArrayList<Pedestrian>();
         Vector base = new Vector(5,5);
+        Random random = new Random(System.currentTimeMillis());
 
-        for (int i = 0; i<10;i++){
+        /*for (int i = 0; i<10;i++){
             for(int j = 0; j<10;j++){
-                Pedestrian p1 = new PedestrianImpl(base.getAdded(new Vector(i,j)),0.10);
+                Pedestrian p1 = new PedestrianImpl(base.getAdded(new Vector(i,random.nextDouble())),0.10);
                 pedestrians.add(p1);
-
             }
-        }
+        }*/
 
-
+        pedestrians.add(new PedestrianImpl(base.getAdded(new Vector(1,1)), 0.10, 1));
+        pedestrians.add(new PedestrianImpl(base.getAdded(new Vector(6,6)), 0.10, 2));
 
         double rmax = 0.37;
         double rmin = 0.10;
@@ -48,35 +49,46 @@ public class PedestrianDynamics {
 
         double time=0;
         int i = 0;
-        while(time<= 300){
+        while(time<= 100){
             for(Pedestrian p : pedestrians){
                 p.wallCollision(rmin);
                 for (Pedestrian other : pedestrians){
-                    if(!p.equals(other) && p.collides(other)){
+                    if(!p.equals(other) && p.collides(other) && p.getId() != 2){
                         p.updateEscape(other, rmin);
-                        other.updateEscape(p, rmin);
+                        //other.updateEscape(p, rmin);
                     }
                 }
             }
 
             for (Pedestrian p : pedestrians){
-                if(p.targetReached()){
-                    p.updateVelocity(rmin, rmax, beta, vmax, secondary);
+                if(p.getId() == 1){
+                    p.updateVelocity(rmin, rmax, beta, vmax, base.getAdded(new Vector(8, 8)));
                 }
                 else {
-                    p.updateVelocity(rmin, rmax, beta, vmax, door);
-
+                    //p.updateVelocity(rmin, rmax, beta, vmax, p.getPosition());
                 }
             }
 
             for(Pedestrian p : pedestrians){
-                p.updateRadius(rmax, tao, dt);
+                for(Pedestrian other : pedestrians){
+                    if(!p.equals(other) && p.getId() != 2){
+                        p.calculateForce(other.getPosition(), new Vector(8,8));
+                    }
+                }
+            }
+
+            for(Pedestrian p : pedestrians){
+                if(p.getId() == 1){
+                    p.updateRadius(rmax, tao, dt);
+                }
             }
 
 
 
             for (Pedestrian p : pedestrians){
-                p.updatePosition(dt, vmax, door);
+                if(p.getId() == 1){
+                    p.updatePosition(dt, vmax, door);
+                }
             }
 
 

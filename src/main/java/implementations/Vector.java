@@ -76,5 +76,8 @@ public class Vector {
         return new Vector(-y, x);
     }
 
-
+    public void reverse() {
+        x = -x;
+        y = -y;
+    }
 }

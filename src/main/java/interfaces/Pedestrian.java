@@ -22,4 +22,7 @@ public interface Pedestrian {
     double getRadius();
     boolean targetReached();
     Vector getVelocity();
+    int getId();
+
+    void calculateForce(Vector otherPosition, Vector target);
 }
