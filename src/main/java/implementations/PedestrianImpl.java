@@ -59,11 +59,13 @@ public class PedestrianImpl implements Pedestrian {
             double mod = escapeVel.length();
             vel = escapeVel.divide(mod);
             v = vmax;
+
         }
         else{
             vel = velocity;
             v = vd;
         }
+
 
         position = position.getAdded(vel.multiply(dt*v));
 
@@ -102,6 +104,7 @@ public class PedestrianImpl implements Pedestrian {
         }
     }
 
+
     public Vector getPosition() {
         return position;
     }
@@ -119,15 +122,19 @@ public class PedestrianImpl implements Pedestrian {
     }
 
     public void calculateForce(Vector otherPosition, Vector target){
-        double A = 2000.0, Bp = 0.08, Bw = 0.04;
+        double A = 3, Bp = 1, Bw = 0.04;
 
         Vector toTarget = target.substract(position).divide(target.substract(position)
                 .length());
         Vector toParticle = otherPosition.substract(position).divide(otherPosition
                 .substract(position).length());
 
-        double angle = toParticle.angle() - toTarget.angle();
+        double angle =  toParticle.angle() -toTarget.angle();
         double mod;
+
+        angle =  Math.atan2(position.x*otherPosition.y-position.y*otherPosition.x,position.x*otherPosition.x+position.y*otherPosition.y);
+        if(id==1)
+            System.out.println(angle);
 
         if((position.y-radius)<=0 && !targetReached){
             mod = A*Math.exp(-position.distance(otherPosition)/Bw)*Math.cos(angle);
@@ -135,13 +142,21 @@ public class PedestrianImpl implements Pedestrian {
         else{
             mod = A*Math.exp(-position.distance(otherPosition)/Bp)*Math.cos(angle);
         }
-
         Vector newVel = (position.substract(otherPosition).divide(position.
                 distance(otherPosition))).multiply(mod).perp();
 
-        System.out.printf("NEW_VEL_X_BEF = %f, NEW_VEL_Y_BEF = %f\n", newVel.x, newVel.y);
-        System.out.printf("VEL_X_BEF = %f, VEL_Y_BEF = %f\n", velocity.x, velocity.y);
+//        System.out.printf("NEW_VEL_X_BEF = %f, NEW_VEL_Y_BEF = %f\n", newVel.x, newVel.y);
+//        System.out.printf("VEL_X_BEF = %f, VEL_Y_BEF = %f\n", velocity.x, velocity.y);
         velocity = velocity.getAdded(newVel);
-        System.out.printf("VEL_X_AFT = %f, VEL_Y_AFT = %f\n", velocity.x, velocity.y);
+
+        velocity = velocity.divide(velocity.length());
+
+       // System.out.println(velocity.length());
+
+//        System.out.printf("VEL_X_AFT = %f, VEL_Y_AFT = %f\n", velocity.x, velocity.y);
+    }
+
+    public void clear(){
+        this.escapeVel = new Vector(0,0);
     }
 }

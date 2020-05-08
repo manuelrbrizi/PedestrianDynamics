@@ -25,4 +25,5 @@ public interface Pedestrian {
     int getId();
 
     void calculateForce(Vector otherPosition, Vector target);
+    void clear();
 }

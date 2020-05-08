@@ -53,42 +53,48 @@ public class PedestrianDynamics {
             for(Pedestrian p : pedestrians){
                 p.wallCollision(rmin);
                 for (Pedestrian other : pedestrians){
-                    if(!p.equals(other) && p.collides(other) && p.getId() != 2){
+                    if(!p.equals(other) && p.collides(other) ){
                         p.updateEscape(other, rmin);
-                        //other.updateEscape(p, rmin);
+                        other.updateEscape(p, rmin);
+                        //other.clear();
+                        System.out.println("CHOQUE");
                     }
                 }
             }
 
             for (Pedestrian p : pedestrians){
                 if(p.getId() == 1){
-                    p.updateVelocity(rmin, rmax, beta, vmax, base.getAdded(new Vector(8, 8)));
+                    p.updateVelocity(rmin, rmax, beta, vmax, base.getAdded(new Vector(18, 18)));
                 }
                 else {
-                    //p.updateVelocity(rmin, rmax, beta, vmax, p.getPosition());
+                    p.updateVelocity(rmin, rmax, beta, vmax, base.getAdded(new Vector(-10, -10)));
                 }
             }
 
             for(Pedestrian p : pedestrians){
                 for(Pedestrian other : pedestrians){
                     if(!p.equals(other) && p.getId() != 2){
-                        p.calculateForce(other.getPosition(), new Vector(8,8));
+                        p.calculateForce(other.getPosition(), base.getAdded(new Vector(18, 18)));
+                    }
+                    else if(!p.equals(other)){
+                        p.calculateForce(other.getPosition(), base.getAdded(new Vector(-10, -10)));
+
                     }
                 }
             }
 
             for(Pedestrian p : pedestrians){
-                if(p.getId() == 1){
+//                if(p.getId() == 1){
                     p.updateRadius(rmax, tao, dt);
-                }
+//                }
             }
 
 
 
             for (Pedestrian p : pedestrians){
-                if(p.getId() == 1){
+//                if(p.getId() == 1){
                     p.updatePosition(dt, vmax, door);
-                }
+//                }
             }
 
 
