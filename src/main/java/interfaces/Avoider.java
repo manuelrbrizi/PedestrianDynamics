@@ -15,6 +15,7 @@ public interface Avoider {
     void calculateWallForce(Wall wall);
 
     Vector getPosition();
+    Vector getTarget();
 
     int getId();
     double getRadius();

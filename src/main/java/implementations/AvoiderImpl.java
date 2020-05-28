@@ -37,11 +37,16 @@ public class AvoiderImpl implements Avoider {
 
 
     public void calculateForce(Avoider other) {
-        double A = 2, Bp = 1;
+        double A = 2.5, Bp = 1;
         Vector otherPosition = other.getPosition();
 
         double angle;
         double mod;
+        Vector a = other.getTarget().substract(otherPosition);
+        Vector b = myTarget.substract(position);
+        if(a.x*b.x >= 0 && a.y*b.y >= 0){
+            return;
+        }
 
         angle =  Math.atan2(position.x*otherPosition.y-position.y*otherPosition.x,position.x*otherPosition.x+position.y*otherPosition.y);
 
@@ -56,7 +61,7 @@ public class AvoiderImpl implements Avoider {
     }
 
     public void calculateWallForce(Wall wall){
-        double A = 5, Bp = 0.01;
+        double A = 3, Bp = 0.01;
         Vector otherPosition = wall.getMinPoint(this);
 
         double angle;
@@ -89,6 +94,10 @@ public class AvoiderImpl implements Avoider {
 
     public double getRadius(){
         return radius;
+    }
+
+    public Vector getTarget(){
+        return myTarget;
     }
 
 
